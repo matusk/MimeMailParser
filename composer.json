@@ -1,0 +1,15 @@
+{
+    "name": "kimhemsoe/MimeMailParser",
+    "authors": [
+        {
+            "name": "Kim Hemsø Rasmussen",
+            "email": "kimhemsoe@gmail.com"
+        }
+    ],
+    "require": {
+
+    },
+    "autoload": {
+        "classmap": ["./"]
+    }
+}
