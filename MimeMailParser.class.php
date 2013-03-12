@@ -138,12 +138,12 @@ class MimeMailParser
      * Retrieve the Email Headers
      * @return Array
      */
-    public function getHeaders()
+    public function getHeaders($part_id = 1)
     {
-        if (isset($this->parts[1])) {
-            return $this->getPartHeaders($this->parts[1]);
+        if (isset($this->parts[$part_id])) {
+            return $this->getPartHeaders($this->parts[$part_id]);
         } else {
-            throw new Exception('MimeMailParser::setPath() or MimeMailParser::setText() must be called before retrieving email headers.');
+            throw new Exception('Invalid part ID');
         }
         return false;
     }
@@ -195,23 +195,29 @@ class MimeMailParser
      * @return Mixed String Body or False if not found
      * @param $type Object[optional]
      */
-    public function getMessageBody($type = 'text')
+    public function getMessageBody($mimeType = 'text')
     {
         $body = false;
         $mime_types = array(
             'text' => 'text/plain',
             'html' => 'text/html'
         );
-        if (in_array($type, array_keys($mime_types))) {
-            foreach ($this->parts as $part) {
-                if ($this->getPartContentType($part) == $mime_types[$type]) {
-                    $headers = $this->getPartHeaders($part);
-                    $body = $this->decode($this->_getPartBody($part), array_key_exists('content-transfer-encoding', $headers) ? $headers['content-transfer-encoding'] : '');
-                }
-            }
-        } else {
-            throw new Exception('Invalid type specified for MimeMailParser::getMessageBody. "type" can either be text or html.');
+
+        $mime_types = array(
+            'text' => 'text/plain',
+            'html' => 'text/html'
+        );
+        if (isset($mime_types[$mimeType])) {
+            $mimeType = $mime_types[$mimeType];
         }
+
+        foreach ($this->parts as $part) {
+            if ($this->getPartContentType($part) == $mimeType) {
+                $headers = $this->getPartHeaders($part);
+                $body = $this->decode($this->_getPartBody($part), array_key_exists('content-transfer-encoding', $headers) ? $headers['content-transfer-encoding'] : '');
+            }
+        }
+
         return $body;
     }
 
@@ -220,21 +226,21 @@ class MimeMailParser
      * @return Array
      * @param $type Object[optional]
      */
-    public function getMessageBodyHeaders($type = 'text')
+    public function getMessageBodyHeaders($mimeType = 'text')
     {
         $headers = false;
         $mime_types = array(
             'text' => 'text/plain',
             'html' => 'text/html'
         );
-        if (in_array($type, array_keys($mime_types))) {
-            foreach ($this->parts as $part) {
-                if ($this->getPartContentType($part) == $mime_types[$type]) {
-                    $headers = $this->getPartHeaders($part);
-                }
+        if (isset($mime_types[$mimeType])) {
+            $mimeType = $mime_types[$mimeType];
+        }
+
+        foreach ($this->parts as $part) {
+            if ($this->getPartContentType($part) == $mimeType) {
+                $headers = $this->getPartHeaders($part);
             }
-        } else {
-            throw new Exception('Invalid type specified for MimeMailParser::getMessageBody. "type" can either be text or html.');
         }
         return $headers;
     }
