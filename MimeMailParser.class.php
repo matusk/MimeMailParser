@@ -1,4 +1,5 @@
 <?php
+namespace MimeMailParser;
 
 /**
  * Fast Mime Mail parser Class using PHP's MailParse Extension
