@@ -1,4 +1,5 @@
 <?php
+namespace MimeMailParser;
 
 /**
  * Model of an Attachment
